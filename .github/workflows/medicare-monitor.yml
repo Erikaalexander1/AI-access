@@ -1,0 +1,23 @@
+name: Medicare ACCESS Monitor
+
+on:
+  schedule:
+    - cron: '0 16 * * 3'  # Wednesday 9am MST = 4pm UTC
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  run-medicare-monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install feedparser anthropic
+      - name: Run medicare monitor
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python medicare_access_monitor_github.py
