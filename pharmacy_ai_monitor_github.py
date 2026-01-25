@@ -268,7 +268,7 @@ def send_email(html_content, num_articles):
     print("Sending email...")
     
     # Email configuration
-    sender_email = "alexander.erika@gmail.com"
+    sender_email = "erika@miluhealth.com"
     receiver_email = "alexander.erika@gmail.com"
     
     # Create message
