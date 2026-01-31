@@ -1,0 +1,26 @@
+name: Daily Leadership Insight
+
+on:
+  schedule:
+    - cron: '0 14 * * 1-4'  # Monday-Thursday at 7am MST (2pm UTC)
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  send-daily-insight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install anthropic
+      
+      - name: Send daily leadership insight
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python daily_leadership.py
