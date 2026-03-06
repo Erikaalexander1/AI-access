@@ -41,46 +41,75 @@ CMS_REFERENCE_DOCS = {
 }
 
 # Keywords organized by topic area
+# 1. FQHC
 FQHC_KEYWORDS = [
     "FQHC", "federally qualified health center", "community health center",
-    "health center", "340B", "HRSA"
+    "health center", "340B", "HRSA", "look-alike", "sliding fee", "UDS"
 ]
 
+# 2. CMS Star Ratings and HEDIS Measures
 STARS_HEDIS_KEYWORDS = [
-    "star ratings", "Stars", "HEDIS", "quality measures", "quality metrics",
+    "star ratings", "star rating", "HEDIS", "quality measures", "quality metrics",
     "performance measures", "CAHPS", "medication adherence", "PDC",
-    "proportion of days covered", "quality bonus"
+    "proportion of days covered", "quality bonus", "cut points", "measure weight",
+    "technical notes", "NCQA", "hybrid method", "administrative data"
 ]
 
+# 3. Population Health Initiatives
+POPULATION_HEALTH_KEYWORDS = [
+    "population health", "care management", "care coordination",
+    "chronic disease management", "social determinants", "SDOH",
+    "health equity", "transitional care", "readmission", "preventive care",
+    "gap closure", "care gaps", "high-risk", "stratification", "outreach"
+]
+
+# 4. Value-Based Care Programs
 VBC_KEYWORDS = [
     "value-based care", "VBC", "value based", "ACO", "accountable care",
     "MSSP", "Medicare Shared Savings", "shared savings",
     "alternative payment model", "APM", "quality payment",
-    "bundled payment", "episode-based"
+    "bundled payment", "episode-based", "performance-based", "pay for performance",
+    "total cost of care", "TCOC"
 ]
 
+# 5. Risk Adjustment / CIN / MSSP / MA / VBC
 RISK_ADJUSTMENT_KEYWORDS = [
     "risk adjustment", "HCC", "hierarchical condition category",
     "CMS-HCC", "RAF score", "risk score", "risk coding",
-    "diagnosis capture", "chart chase"
+    "diagnosis capture", "chart chase", "suspect condition", "recapture",
+    "v28", "v24", "risk model", "encounter data"
 ]
 
+# 6 & 8. MA Quality / Stars / HEDIS Performance (MA-specific)
 MA_KEYWORDS = [
-    "Medicare Advantage", "MA plan", "MA contract",
-    "Part C", "Medicare managed care", "MA quality",
-    "MA performance", "SNP", "special needs plan"
+    "Medicare Advantage", "MA plan", "MA contract", "MA quality",
+    "Part C", "Medicare managed care", "MA performance",
+    "SNP", "special needs plan", "dual eligible", "D-SNP",
+    "bid", "benchmark", "quality bonus payment", "rebate",
+    "plan finder", "MA stars", "contract-level"
 ]
 
-POPULATION_HEALTH_KEYWORDS = [
-    "population health", "care management", "care coordination",
-    "chronic disease management", "social determinants",
-    "SDOH", "health equity", "transitional care",
-    "readmission", "preventive care"
+# 7. Adherence Programs / Stars / HEDIS / Quality Contracts
+ADHERENCE_KEYWORDS = [
+    "medication adherence", "PDC", "proportion of days covered",
+    "statin adherence", "RAS antagonist", "diabetes medication",
+    "CMR", "comprehensive medication review", "MTM", "medication therapy management",
+    "refill", "persistence", "compliance", "adherence program",
+    "pharmacy quality", "Part D", "medication possession ratio"
 ]
 
+# 9. CMS-HCC / MA / Alternative Payment Models
+APM_KEYWORDS = [
+    "alternative payment model", "APM", "CMS-HCC", "payment model",
+    "CMMI", "innovation model", "direct contracting", "ACO REACH",
+    "primary care first", "global capitation", "capitated", "total cost",
+    "prospective payment", "retrospective", "two-sided risk", "downside risk"
+]
+
+# CIN-specific
 CIN_KEYWORDS = [
     "CIN", "clinically integrated network", "physician alignment",
-    "network performance", "clinical integration"
+    "network performance", "clinical integration", "IPA", "independent practice"
 ]
 
 
@@ -99,8 +128,8 @@ def is_relevant_article(title, summary):
     
     # Check if contains any target keywords
     all_keywords = (FQHC_KEYWORDS + STARS_HEDIS_KEYWORDS + VBC_KEYWORDS + 
-                   RISK_ADJUSTMENT_KEYWORDS + MA_KEYWORDS + 
-                   POPULATION_HEALTH_KEYWORDS + CIN_KEYWORDS)
+                   RISK_ADJUSTMENT_KEYWORDS + MA_KEYWORDS + ADHERENCE_KEYWORDS +
+                   APM_KEYWORDS + POPULATION_HEALTH_KEYWORDS + CIN_KEYWORDS)
     
     if any(keyword.lower() in text for keyword in all_keywords):
         return True
@@ -328,7 +357,7 @@ def create_html_email(executive_summary, articles, plain_english_summary=""):
     html_parts.append('<h1 style="color: #0066cc; text-align: center;">Healthcare Quality & Policy Weekly Brief</h1>')
     html_parts.append('<p style="text-align: center; color: #cc0000; font-size: 10pt; font-weight: bold;">✓ Verified Against CMS Documentation</p>')
     html_parts.append(f'<p style="text-align: center; color: #666; font-size: 11pt;">Week ending {datetime.now().strftime("%B %d, %Y")}</p>')
-    html_parts.append(f'<p style="text-align: center; color: #666; font-size: 10pt; font-style: italic;">Articles analyzed: {len(articles)} | Focus: FQHC, HEDIS/Stars, VBC, Risk Adjustment, MA Programs</p>')
+    html_parts.append(f'<p style="text-align: center; color: #666; font-size: 10pt; font-style: italic;">Articles analyzed: {len(articles)} | Focus: FQHC · Stars/HEDIS · Population Health · VBC · Risk Adjustment · MA Quality · Adherence · CMS-HCC · APMs</p>')
     html_parts.append('<hr style="border: 1px solid #ddd; margin: 20px 0;">')
     
     # Process executive summary
@@ -340,25 +369,28 @@ def create_html_email(executive_summary, articles, plain_english_summary=""):
         if not line:
             continue
         
-        # Section headers
-        if (line.startswith('##') or line.startswith('#') or 
-            'EXECUTIVE SUMMARY' in line or 'KEY DEVELOPMENTS' in line or 
-            'CARINA IMPLEMENTATION' in line or 'IMPLEMENTATION IDEAS' in line or
-            'STRATEGIC IMPLICATIONS' in line or 'KEY TAKEAWAYS' in line or
-            any(topic in line for topic in ['HEDIS', 'Star', 'FQHC', 'VBC', 'Risk Adjustment', 'MA Quality', 'Population Health'])):
+        # Section headers - check BEFORE bullet detection
+        # Strip markdown bold before checking
+        clean_line = re.sub(r'\*\*(.*?)\*\*', r'\1', line).strip()
+        clean_line = re.sub(r'^\*+\s*', '', clean_line).strip()  # strip leading asterisks
+        
+        if (clean_line.startswith('##') or clean_line.startswith('#') or 
+            'EXECUTIVE SUMMARY' in clean_line.upper() or 'KEY DEVELOPMENTS' in clean_line.upper() or 
+            'CARINA IMPLEMENTATION' in clean_line.upper() or 'IMPLEMENTATION IDEAS' in clean_line.upper() or
+            'STRATEGIC IMPLICATIONS' in clean_line.upper() or 'KEY TAKEAWAYS' in clean_line.upper() or
+            any(topic in clean_line for topic in ['HEDIS', 'Star Ratings', 'FQHC', 'VBC', 'Risk Adjustment', 'MA Quality', 'Population Health', 'Medicare Advantage', 'MSSP', '340B', 'Program Integrity'])):
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
-            section = line.replace('##', '').replace('#', '').strip()
+            section = re.sub(r'[#\*]', '', clean_line).strip().rstrip(':')
             
-            # Different colors for different sections
-            if 'EXECUTIVE' in section:
+            if 'EXECUTIVE' in section.upper():
                 color = '#0066cc'
                 size = '18pt'
-            elif 'IMPLEMENTATION' in section or 'Initiative' in section:
+            elif 'IMPLEMENTATION' in section.upper():
                 color = '#006600'
                 size = '16pt'
-            elif any(topic in section for topic in ['HEDIS', 'Star', 'FQHC', 'VBC', 'Risk', 'MA', 'Population']):
+            elif any(topic in section for topic in ['HEDIS', 'Star', 'FQHC', 'VBC', 'Risk', 'MA', 'Population', 'Medicare', 'MSSP', '340B']):
                 color = '#006600'
                 size = '14pt'
             else:
@@ -368,12 +400,13 @@ def create_html_email(executive_summary, articles, plain_english_summary=""):
             html_parts.append(f'<h2 style="color: {color}; margin-top: 20px; font-size: {size};">{section}</h2>')
             continue
         
-        # Bullet points
-        if line.startswith('•') or line.startswith('-') or line.startswith('*'):
+        # Bullet points - only single * or - or •, NOT **bold**
+        if re.match(r'^[•\-]\s', line) or re.match(r'^\*\s', line):
             if not in_list:
                 html_parts.append('<ul style="line-height: 1.6;">')
                 in_list = True
-            text = line[1:].strip().replace('**', '<strong>').replace('**', '</strong>')
+            text = re.sub(r'^[•\-\*]\s+', '', line)
+            text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
             html_parts.append(f'<li>{text}</li>')
         else:
             if in_list:
@@ -388,7 +421,8 @@ def create_html_email(executive_summary, articles, plain_english_summary=""):
         html_parts.append('</ul>')
     
     # Plain English Summary Section
-    if plain_english_summary:
+    print(f"Plain English summary length: {len(plain_english_summary)} chars")
+    if plain_english_summary and len(plain_english_summary.strip()) > 10:
         html_parts.append('<hr style="border: 2px solid #ff9900; margin: 30px 0;">')
         html_parts.append('<div style="background: #fff8ee; border: 2px solid #ff9900; border-radius: 8px; padding: 20px; margin-bottom: 20px;">')
         html_parts.append('<h2 style="color: #cc6600; font-size: 18pt; margin-top: 0;">🧠 Plain English — What This Actually Means</h2>')
