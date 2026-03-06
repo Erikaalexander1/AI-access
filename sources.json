@@ -1,0 +1,89 @@
+{
+  "rss_feeds": [
+    {
+      "name": "CMS.gov Newsroom",
+      "url": "https://www.cms.gov/newsroom/rss-feeds",
+      "category": "CMS Policy & Regulation",
+      "topics": ["star_ratings", "risk_adjustment", "ma_quality", "fqhc", "vbc"]
+    },
+    {
+      "name": "Federal Register - CMS Rules",
+      "url": "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bagencies%5D%5B%5D=centers-for-medicare-medicaid-services",
+      "category": "Federal Regulation",
+      "topics": ["star_ratings", "risk_adjustment", "ma_quality", "fqhc"]
+    },
+    {
+      "name": "NACHC News",
+      "url": "https://www.nachc.org/feed/",
+      "category": "FQHC Policy",
+      "topics": ["fqhc", "population_health"]
+    },
+    {
+      "name": "Health Affairs Blog",
+      "url": "https://www.healthaffairs.org/do/section/blog/rss",
+      "category": "Health Policy Analysis",
+      "topics": ["vbc", "population_health", "risk_adjustment", "ma_quality"]
+    },
+    {
+      "name": "HCPLAN - Health Care Payment Learning & Action Network",
+      "url": "https://hcp-lan.org/feed/",
+      "category": "Value-Based Care",
+      "topics": ["vbc", "apm"]
+    }
+  ],
+  "scrape_sources": [
+    {
+      "name": "CMS Star Ratings",
+      "url": "https://www.cms.gov/medicare/health-drug-plans/part-c-d-performance-data",
+      "category": "Star Ratings & HEDIS",
+      "check_for": "Star Ratings Technical Notes, cut points, measure updates"
+    },
+    {
+      "name": "CMS FQHC Center",
+      "url": "https://www.cms.gov/center/provider-type/federally-qualified-health-centers-fqhc-center",
+      "category": "FQHC",
+      "check_for": "PPS updates, enrollment changes, billing guidance"
+    },
+    {
+      "name": "CMS Innovation Center",
+      "url": "https://www.cms.gov/priorities/innovation/models",
+      "category": "VBC Models",
+      "check_for": "ACO REACH, MSSP, Primary Care First updates"
+    },
+    {
+      "name": "CMS Risk Adjustment",
+      "url": "https://www.cms.gov/medicare/health-plans/medicareadvtgspecratestats/risk-adjustors",
+      "category": "Risk Adjustment",
+      "check_for": "HCC model updates, V28 implementation, RADV audits"
+    },
+    {
+      "name": "CMS MA Rates & Statistics",
+      "url": "https://www.cms.gov/medicare/health-plans/medicareadvtgspecratestats",
+      "category": "MA Contracts",
+      "check_for": "Advance Notice, Rate Announcement, benchmark updates"
+    },
+    {
+      "name": "CMS Quality Measures",
+      "url": "https://www.cms.gov/medicare/quality/measures",
+      "category": "Quality Measurement",
+      "check_for": "Universal Foundation, measure alignment, ECDS updates"
+    },
+    {
+      "name": "NCQA HEDIS Updates",
+      "url": "https://www.ncqa.org/hedis/",
+      "category": "HEDIS",
+      "check_for": "New measures, specification changes, ECDS transition"
+    }
+  ],
+  "keyword_filters": {
+    "fqhc": ["FQHC", "federally qualified", "community health center", "safety net", "330 grant", "PPS", "prospective payment"],
+    "star_ratings": ["star rating", "Stars", "cut point", "Part C", "Part D", "display measure", "weight"],
+    "hedis": ["HEDIS", "SUPD", "statin use", "medication adherence", "PDC", "SPC", "CDC", "ECDS", "electronic clinical data"],
+    "vbc": ["value-based", "value based", "alternative payment", "APM", "shared savings", "total cost of care", "TCOC"],
+    "risk_adjustment": ["HCC", "risk adjustment", "risk score", "V28", "chart review", "RADV", "hierarchical condition"],
+    "mssp": ["MSSP", "shared savings program", "ACO", "accountable care"],
+    "ma_quality": ["Medicare Advantage", "MA plan", "quality bonus", "C&D SNP", "bid", "benchmark"],
+    "population_health": ["population health", "SDOH", "social determinants", "health equity", "disparity", "screening"],
+    "adherence": ["medication adherence", "PDC", "proportion of days covered", "MTM", "medication therapy", "CMR", "comprehensive medication review", "PQA"]
+  }
+}

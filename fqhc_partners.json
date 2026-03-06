@@ -1,0 +1,117 @@
+{
+  "network_name": "Carina Health Network",
+  "network_type": "Clinically Integrated Network (CIN)",
+  "contracts": ["MSSP", "Medicare Advantage"],
+  "state": "Colorado",
+  "fqhc_partners": [
+    {
+      "name": "Clinica Family Health",
+      "formerly": "Clinica Campesina",
+      "region": "Boulder / Broomfield / Lafayette / Thornton",
+      "focus_populations": ["Latino/Hispanic", "Immigrant families", "Low-income"]
+    },
+    {
+      "name": "Denver Health Community Health Centers",
+      "note": "Specifically community health centers like Uptown",
+      "region": "Denver Metro",
+      "focus_populations": ["Urban underserved", "Medicaid", "Uninsured"]
+    },
+    {
+      "name": "High Plains Community Health Center",
+      "region": "Eastern Plains / Lamar",
+      "focus_populations": ["Rural", "Agricultural workers", "Frontier communities"]
+    },
+    {
+      "name": "Mountain Family Health Centers",
+      "region": "Glenwood Springs / Basalt / Rifle / Edwards",
+      "focus_populations": ["Mountain communities", "Seasonal workers", "Rural"]
+    },
+    {
+      "name": "Peak Vista Community Health Centers",
+      "region": "Colorado Springs / El Paso County",
+      "focus_populations": ["Military families", "Veterans", "Low-income urban"]
+    },
+    {
+      "name": "Pueblo Community Health Center",
+      "region": "Pueblo",
+      "focus_populations": ["Hispanic/Latino", "Low-income", "Chronic disease burden"]
+    },
+    {
+      "name": "Salud Family Health",
+      "region": "Northeastern Colorado / Fort Lupton / Commerce City / Brighton",
+      "focus_populations": ["Migrant workers", "Agricultural communities", "Hispanic/Latino"]
+    },
+    {
+      "name": "Sunrise Community Health",
+      "region": "Greeley / Evans / Fort Collins",
+      "focus_populations": ["Immigrant communities", "Agricultural workers", "Low-income"]
+    },
+    {
+      "name": "Valley-Wide Health Systems",
+      "region": "San Luis Valley / Alamosa / Monte Vista / Del Norte",
+      "focus_populations": ["Rural", "Hispanic/Latino", "Frontier communities"]
+    },
+    {
+      "name": "STRIDE Community Health Center",
+      "formerly": "Metro Community Provider Network",
+      "region": "Wheat Ridge / Arvada / Denver suburbs",
+      "focus_populations": ["Suburban underserved", "Refugees", "Medicaid"]
+    },
+    {
+      "name": "River Valley Health Centers",
+      "note": "Including Olathe Community Clinic",
+      "region": "Western Slope / Olathe / Montrose area",
+      "focus_populations": ["Rural", "Agricultural workers"]
+    },
+    {
+      "name": "Northwest Colorado Health",
+      "formerly": "Northwest Colorado Visiting Nurse Association",
+      "region": "Steamboat Springs / Craig / Routt County",
+      "focus_populations": ["Rural mountain", "Seasonal tourism workers"]
+    },
+    {
+      "name": "Uncompahgre Medical Center",
+      "note": "Uncompahgre Combined Clinics",
+      "region": "Norwood / San Miguel County",
+      "focus_populations": ["Frontier", "Extremely rural", "Mining communities"]
+    },
+    {
+      "name": "MarillacHealth",
+      "formerly": "Marillac Clinic",
+      "region": "Grand Junction / Mesa County",
+      "focus_populations": ["Low-income", "Uninsured", "Western Slope urban"]
+    },
+    {
+      "name": "Summit Community Care Clinic",
+      "region": "Frisco / Summit County",
+      "focus_populations": ["Seasonal workers", "Tourism industry", "Mountain communities"]
+    },
+    {
+      "name": "Tepeyac Community Health Center",
+      "formerly": "La Clinica Tepeyac",
+      "region": "Denver (Globeville-Elyria-Swansea)",
+      "focus_populations": ["Immigrant", "Hispanic/Latino", "Undocumented"]
+    },
+    {
+      "name": "Axis Health System",
+      "note": "Including Southwest Colorado Mental Health Center",
+      "region": "Durango / La Plata / Archuleta counties",
+      "focus_populations": ["Behavioral health integration", "Rural", "Native American"]
+    },
+    {
+      "name": "Sheridan Health Services",
+      "region": "Sheridan / Southwest Denver metro",
+      "focus_populations": ["School-based health", "Low-income families"]
+    },
+    {
+      "name": "Denver Indian Health and Family Services",
+      "region": "Denver",
+      "focus_populations": ["American Indian / Alaska Native", "Urban Native"]
+    },
+    {
+      "name": "Inner City Health Center",
+      "region": "Denver",
+      "focus_populations": ["Homeless", "Extremely low-income", "Behavioral health"]
+    }
+  ]
+}
