@@ -1,0 +1,23 @@
+name: Healthcare Quality Monitor
+
+on:
+  schedule:
+    - cron: '0 18 * * 1'  # Monday 11am MST = 6pm UTC
+  workflow_dispatch:
+
+jobs:
+  run-quality-monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install feedparser anthropic
+      - name: Run quality monitor
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python healthcare_quality_monitor.py
