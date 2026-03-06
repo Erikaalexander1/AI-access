@@ -357,8 +357,8 @@ def send_email(html_content, num_articles):
     """Send email via Gmail"""
     print("Sending email...")
     
-    sender_email = "erika@miluhealth.com"
-    receiver_email = "erika@miluhealth.com"
+    sender_email = "alexander.erika@gmail.com"
+    receiver_email = "alexander.erika@gmail.com"
     
     msg = MIMEMultipart('alternative')
     msg['Subject'] = f'✓ Healthcare Quality Brief (CMS-Verified) - {datetime.now().strftime("%b %d")} ({num_articles} articles)'
