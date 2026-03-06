@@ -254,13 +254,30 @@ Articles to analyze:
             messages=[{"role": "user", "content": prompt}]
         )
         
-        # Extract response text (handling tool use)
-        response_text = ""
-        for block in message.content:
-            if hasattr(block, 'text'):
-                response_text += block.text
+        # Extract response text (handling tool use) - only take the LAST text block
+        # (first blocks are often Claude's internal "thinking" preamble)
+        text_blocks = [block.text for block in message.content if hasattr(block, 'text')]
         
-        return response_text if response_text else "Error: No text content in response"
+        if not text_blocks:
+            return "Error: No text content in response"
+        
+        # Join all text blocks but strip any preamble before the actual analysis
+        response_text = " ".join(text_blocks)
+        
+        # Remove common preamble patterns
+        for preamble in [
+            "I'll analyze", "I will analyze", "Based on my search", 
+            "Let me analyze", "I can now provide"
+        ]:
+            if preamble in response_text:
+                # Find where the real content starts (first numbered section or header)
+                import re
+                match = re.search(r'(HEALTHCARE POLICY|1\.\s+EXECUTIVE|EXECUTIVE SUMMARY)', response_text)
+                if match:
+                    response_text = response_text[match.start():]
+                break
+        
+        return response_text
         
     except Exception as e:
         print(f"Error creating summary: {e}")
@@ -293,7 +310,9 @@ Here is the summary to simplify:
             max_tokens=800,
             messages=[{"role": "user", "content": prompt}]
         )
-        return message.content[0].text
+        result = message.content[0].text
+        print(f"Plain English summary generated ({len(result)} chars)")
+        return result
     except Exception as e:
         print(f"Error creating plain English summary: {e}")
         return ""
@@ -379,11 +398,11 @@ def create_html_email(executive_summary, articles, plain_english_summary=""):
             line = line.strip()
             if not line:
                 continue
-            if line.startswith('•') or line.startswith('-') or line.startswith('*'):
-                text = line[1:].strip()
-                # Bold the headline before the first colon or dash
+            # Handle bullet points (•, -, *, or numbered like "1.")
+            if line.startswith('•') or line.startswith('-') or line.startswith('*') or re.match(r'^\d+\.', line):
+                text = re.sub(r'^[•\-\*\d\.]+\s*', '', line)
                 text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
-                html_parts.append(f'<p style="line-height: 1.7; margin: 10px 0;">• {text}</p>')
+                html_parts.append(f'<p style="line-height: 1.8; margin: 12px 0;">• {text}</p>')
             else:
                 line = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
                 html_parts.append(f'<p style="line-height: 1.7;">{line}</p>')
