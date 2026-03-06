@@ -267,7 +267,39 @@ Articles to analyze:
         return f"Error creating executive summary: {str(e)}"
 
 
-def create_html_email(executive_summary, articles):
+def create_plain_english_summary(executive_summary):
+    """Generate a super simple, plain-English version of the summary"""
+    print("Creating plain English summary...")
+    
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    
+    prompt = f"""Below is a detailed healthcare policy summary. Your job is to rewrite it in the simplest possible way — like you're explaining it to a smart friend who knows nothing about healthcare policy.
+
+Rules:
+- No jargon. If you must use a term, explain it in plain words immediately after.
+- Short sentences. 
+- Use analogies or real-world comparisons where helpful.
+- Focus only on what actually MATTERS and what someone should DO about it.
+- Format as 3-5 bullet points max. Each bullet = one key idea.
+- Start each bullet with a bold one-phrase headline, then 1-2 plain sentences explaining it.
+
+Here is the summary to simplify:
+
+{executive_summary}"""
+
+    try:
+        message = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=800,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return message.content[0].text
+    except Exception as e:
+        print(f"Error creating plain English summary: {e}")
+        return ""
+
+
+def create_html_email(executive_summary, articles, plain_english_summary=""):
     """Create formatted HTML email"""
     print("Creating HTML email...")
     
@@ -336,6 +368,28 @@ def create_html_email(executive_summary, articles):
     if in_list:
         html_parts.append('</ul>')
     
+    # Plain English Summary Section
+    if plain_english_summary:
+        html_parts.append('<hr style="border: 2px solid #ff9900; margin: 30px 0;">')
+        html_parts.append('<div style="background: #fff8ee; border: 2px solid #ff9900; border-radius: 8px; padding: 20px; margin-bottom: 20px;">')
+        html_parts.append('<h2 style="color: #cc6600; font-size: 18pt; margin-top: 0;">🧠 Plain English — What This Actually Means</h2>')
+        html_parts.append('<p style="color: #666; font-style: italic; font-size: 10pt;">No jargon. Just the key stuff, explained simply.</p>')
+        
+        for line in plain_english_summary.split('\n'):
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith('•') or line.startswith('-') or line.startswith('*'):
+                text = line[1:].strip()
+                # Bold the headline before the first colon or dash
+                text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+                html_parts.append(f'<p style="line-height: 1.7; margin: 10px 0;">• {text}</p>')
+            else:
+                line = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
+                html_parts.append(f'<p style="line-height: 1.7;">{line}</p>')
+        
+        html_parts.append('</div>')
+
     # Article reference list
     html_parts.append('<hr style="border: 1px solid #ddd; margin: 30px 0;">')
     html_parts.append('<h2 style="color: #0066cc;">Article Reference List</h2>')
@@ -404,8 +458,11 @@ def main():
         # Create executive summary with CMS cross-referencing
         executive_summary = create_executive_summary(articles)
         
+        # Create plain English version
+        plain_english_summary = create_plain_english_summary(executive_summary)
+        
         # Create HTML email
-        html_content = create_html_email(executive_summary, articles)
+        html_content = create_html_email(executive_summary, articles, plain_english_summary)
         
         # Send email
         success = send_email(html_content, len(articles))
@@ -414,7 +471,7 @@ def main():
             print()
             print("=" * 80)
             print("SUCCESS! CMS-verified weekly brief emailed")
-            print(f"To: erika@miluhealth.com")
+            print(f"To: alexander.erika@gmail.com")
             print(f"Articles analyzed: {len(articles)}")
             print(f"Run completed: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             print("=" * 80)
